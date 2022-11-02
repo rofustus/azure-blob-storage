@@ -42,9 +42,11 @@ $containerName = 'azurephpdemo';
 	   $blobURL = $blob->getUrl();
            echo "<td align='center' style='width: 255px; height: 255px;'>";
 	   //echo "<br>";
+	   echo "<a href='" . $blobURL . "' >";
 	   echo "<img src='";
            echo $blobURL;
            echo "' style='max-height:100%;max-width:100%;'/>";
+	   echo "</a>";
 	   echo "</td>";
 	if($i==3){
         echo "</tr>";
