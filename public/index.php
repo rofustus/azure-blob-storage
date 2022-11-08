@@ -22,7 +22,7 @@ $blobClient = BlobRestProxy::createBlobService($connectionString);
 $blobService = new AzureBlobService($blobClient);
 $mysqlService = new mysql();
 $containerName = 'azurephpdemo';
-$filename = "";
+//$filename = "";
 //list blob
  $listBlobsOptions = new ListBlobsOptions();
    // $listBlobsOptions->setPrefix("HelloWorld");
@@ -48,7 +48,7 @@ $filename = "";
            echo "' style='max-height:100%;max-width:100%;'/>";
 	   echo "</a>";
 	   echo "</td>";
-	if($i==3){
+	if($i==5){
         echo "</tr>";
         echo "<tr>";
 	$i=0;
@@ -84,10 +84,6 @@ try {
 try {
     
     $fileName = $blobService->uploadBlob($containerName, $_FILES['blob']);
-} catch (ServiceException $serviceException) {
-    // Log the exception, most likely connectivity issue
-}
-
 $fileLink = sprintf(
     '%s%s%s/%s/%s',
     'https://',
@@ -96,7 +92,12 @@ $fileLink = sprintf(
     strtolower($containerName),
     $fileName
 );
-$insertBlobSql = $mysqlService->insertDB1($filename, $fileLink);
+$insertBlobSql = $mysqlService->insertDB1($fileName, $fileLink);
+} catch (ServiceException $serviceException) {
+    // Log the exception, most likely connectivity issue
+}
+
+
 echo sprintf(
     'Find the uploaded file at <a href="%s" target="_blank">%s</a>.',
     $fileLink,

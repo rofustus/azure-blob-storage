@@ -2,6 +2,7 @@
 
 namespace AzurePHP\Service;
 use \PDO;
+use \DateTime;
 
 class mysql {
 
@@ -20,11 +21,24 @@ catch (PDOException $e) {
     print("Error connecting to SQL Server.");
     die(print_r($e));
 }
-$time = time();
-$timestamp = date("Y-m-d h:m:s", $time);
-$sql = "INSERT INTO img (url, filename, upload-time) values (?,?,?)";
-$stmt= $conn->prepare($sql);
-$srmt->execute([$url, $filename, $timestamp]);
+$time= DateTime::createFromFormat('U.u', microtime(true));
+$timestamp = $time->format("y-m-d h:i:s.u");
+echo $timestamp;
+$t = 1;
+$data = [
+    'url' => $url,
+    'filename' => $filename,
+    'timestamp' => $timestamp,
+];
+echo $url;
+echo $filename;
+$sql = "INSERT INTO img (url, filename, timestamp) VALUES (:url, :filename, :timestamp)";
+$stmt = $conn->prepare($sql);
+//$stmt->bindParam(1, $url, PDO::PARAM_STR);
+//$stmt->bindParam(2, $filename, PDO::PARAM_STR);
+//$stmt->bindParam(3, $timestamp, PDO::PARAM_STR);
+//$stmt->exec([$url, $filename, $timestamp]);
+$stmt->execute($data);
 $conn=null;
 
 return true;
