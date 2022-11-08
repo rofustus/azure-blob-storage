@@ -21,11 +21,18 @@ $connectionString = getenv('STORAGE_CONN_STRING') ?: '';
 $blobClient = BlobRestProxy::createBlobService($connectionString);
 $blobService = new AzureBlobService($blobClient);
 $mysqlService = new mysql();
-$containerName = 'azurephpdemo';
+$containerName = 'azurephpdemo1';
 //$filename = "";
 //list blob
  $listBlobsOptions = new ListBlobsOptions();
    // $listBlobsOptions->setPrefix("HelloWorld");
+
+try {
+    $blobService->addBlobContainer($containerName);
+    $blobService->setBlobContainerAcl($containerName, AzureBlobService::ACL_BLOB);
+} catch (ServiceException $serviceException) {
+    // Log the exception, most likely because the container already exists
+}
 
     echo "These are the blobs present in the container: ";
 
@@ -73,13 +80,6 @@ if ('' === $connectionString) {
     );
 }
 
-
-try {
-    $blobService->addBlobContainer($containerName);
-    $blobService->setBlobContainerAcl($containerName, AzureBlobService::ACL_BLOB);
-} catch (ServiceException $serviceException) {
-    // Log the exception, most likely because the container already exists
-}
 
 try {
     
