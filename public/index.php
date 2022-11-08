@@ -5,24 +5,24 @@ if ( ! defined('CURL_SSLVERSION_TLSv1_2')) {
 }
 //defined('CURL_SSLVERSION_DEFAULT') || define('CURL_SSLVERSION_DEFAULT', 0);
 //defined('CURLOPT_SSLVERSION_TLSv1_2')   || define('CURLOPT_SSLVERSION_TLSv1_2', 1);
+use AzurePHP\Service\mysql;
 use AzurePHP\Service\AzureBlobService;
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 //use MicrosoftAzure\Storage\Blob;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
-
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $storageAccountName = getenv('STORAGE_ACCOUNT');
 $connectionString = getenv('STORAGE_CONN_STRING') ?: '';
+
 //echo $connectionString;
 
 $blobClient = BlobRestProxy::createBlobService($connectionString);
 $blobService = new AzureBlobService($blobClient);
-
+$mysqlService = new mysql();
 $containerName = 'azurephpdemo';
-
+$filename = "";
 //list blob
  $listBlobsOptions = new ListBlobsOptions();
    // $listBlobsOptions->setPrefix("HelloWorld");
@@ -82,6 +82,7 @@ try {
 }
 
 try {
+    
     $fileName = $blobService->uploadBlob($containerName, $_FILES['blob']);
 } catch (ServiceException $serviceException) {
     // Log the exception, most likely connectivity issue
@@ -95,6 +96,7 @@ $fileLink = sprintf(
     strtolower($containerName),
     $fileName
 );
+$insertBlobSql = $mysqlService->insertDB1($filename, $fileLink);
 echo sprintf(
     'Find the uploaded file at <a href="%s" target="_blank">%s</a>.',
     $fileLink,
@@ -106,3 +108,5 @@ echo "<img src='";
 echo $fileLink;
 echo "' height='20%' width='20%' />";
 echo '<br><a href="/">Reset</a>';
+
+?>
